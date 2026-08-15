@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Muhammad Digital Solution - Pizza 3D Menu</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- This is the correct, official Google Model Viewer CDN script -->
+    <script type="module" src="https://unpkg.com/@google/model-viewer@3.5.0/dist/model-viewer.min.js"></script>
+    <!-- Fallback for older browsers that don't support ES modules -->
+    <script nomodule src="https://unpkg.com/@google/model-viewer@3.5.0/dist/model-viewer-legacy.js"></script>
+
+    <style>
+      body { margin: 0; padding: 0; font-family: sans-serif; }
+
+      model-viewer {
+        width: 100vw; height: 100vh; display: block;
+        background: radial-gradient(circle at 50% 40%, #fdfdfd 0%, #e8e8e8 60%, #d6d6d6 100%);
+      }
+
+      #splash-container {
+        position: absolute; width: 100vw; height: 100vh; top: 0; left: 0;
+        background-color: #ffffff; display: flex; flex-direction: column;
+        justify-content: center; align-items: center; z-index: 999;
+        transition: opacity 0.5s ease;
+      }
+      #splash-container img { width: 200px; height: auto; margin-bottom: 20px; }
+      #splash-container h1 { font-size: 22px; color: #111111; font-weight: bold; }
+
+      #ar-button {
+        position: absolute;
+        bottom: 30px; left: 50%;
+        transform: translateX(-50%);
+        background-color: #111111;
+        color: #ffffff;
+        border: none;
+        border-radius: 30px;
+        padding: 14px 28px;
+        font-size: 16px;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 4px 14px rgba(0,0,0,0.3);
+        z-index: 10;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="splash-container">
+      <img src="MUHAMMAD%20ds%20logo.png" alt="Muhammad Digital Solution">
+      <h1>Muhammad Digital Solution</h1>
+    </div>
+
+    <model-viewer
+      id="menu-model"
+      src="pizza.glb"
+      alt="3D Pizza Model"
+      ar
+      ar-modes="quick-look webxr scene-viewer"
+      ar-scale="fixed"
+      scale="0.001 0.001 0.001"
+      camera-controls
+      touch-action="none"
+      auto-rotate
+      shadow-intensity="1"
+      environment-image="neutral"
+      poster="MUHAMMAD%20ds%20logo.png">
+
+      <button id="ar-button" slot="ar-button">
+        📱 View on Your Table
+      </button>
+    </model-viewer>
+
+    <script>
+      const splash = document.getElementById('splash-container');
+      const modelViewer = document.getElementById('menu-model');
+      let removed = false;
+
+      function removeSplash() {
+        if (removed) return;
+        removed = true;
+        splash.style.opacity = 0;
+        setTimeout(() => splash.remove(), 500);
+      }
+
+      modelViewer.addEventListener('load', removeSplash);
+      modelViewer.addEventListener('error', (e) => {
+        console.error('model-viewer failed to load the GLB:', e.detail);
+        removeSplash();
+      });
+      setTimeout(removeSplash, 4000);
+
+      const arButton = document.getElementById('ar-button');
+      function updateArAvailability() {
+        if (!modelViewer.canActivateAR) {
+          arButton.style.display = 'none';
+        } else {
+          arButton.style.display = 'flex';
+        }
+      }
+      modelViewer.addEventListener('load', updateArAvailability);
+      setTimeout(updateArAvailability, 1500);
+    </script>
+  </body>
+</html>
